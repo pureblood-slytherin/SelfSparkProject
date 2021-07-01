@@ -1,12 +1,12 @@
 package Excercises
 
-import Excercises.HelperObjects.{ movies, ratings, users}
+import Excercises.HelperObjects.{movies, ratings, users}
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions._
 
-import java.sql.{ Timestamp}
+import java.sql.Timestamp
 import java.nio.charset.CodingErrorAction
 import scala.io.{Codec, Source}
 
@@ -133,13 +133,27 @@ object Solutions {
   def main(args: Array[String]): Unit = {
 
     // Exercise 1 Answer
-    joinedRDD.coalesce(1).saveAsTextFile("src/main/resources/Data/Saved/movies1.csv")
+    //joinedRDD.coalesce(1).saveAsTextFile("src/main/resources/Data/Saved/movies1.csv")
+    joinedRDD.toDF.write
+      .mode(SaveMode.Overwrite)
+      .format("csv")
+      .option("header", "true")
+      .option("sep", "\t")
+      .save("src/main/resources/Data/Saved/movies1.csv")
 
     // Exercise 2 Answer
-    GenreArrayRDD1.coalesce(1).saveAsTextFile("src/main/resources/Data/Saved/movies2.csv")
+    //GenreArrayRDD1.coalesce(1).saveAsTextFile("src/main/resources/Data/Saved/movies2.csv")
+    GenreArrayRDD1.toDF.write
+      .mode(SaveMode.Overwrite)
+      .format("csv")
+      .option("header", "true")
+      .option("sep", "\t")
+      .save("src/main/resources/Data/Saved/movies2.csv")
 
     //Exercise 3 Answer
-    FinalMovieRDD.coalesce(1).saveAsTextFile("src/main/resources/Data/Saved/movies3.csv")
+    FinalMovieRDD.toDF.write
+      .mode(SaveMode.Overwrite)
+      .save("src/main/resources/Data/Saved/movies2.parquet") // as parquet is default no need to specify format
 
   }
 
